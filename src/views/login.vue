@@ -98,23 +98,25 @@
 
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import commonApi from '@/api/common';
+import { defineComponent, onMounted, ref } from 'vue'
+import commonApi from '@/api/common'
 export default defineComponent({
   setup(props, ctx) {
-    console.log(props, ctx);
+    console.log(props, ctx)
+    const systemName = ref('111')
+
     const getPlatformInfo = () => {
       const data = {
         code: 'platform'
       }
-      commonApi.getTenantByCode(data).then(res => {
-        console.log(res);
+      commonApi.getTenantByCode(data).then((res: any) => {
+        systemName.value = res.name
+        console.log(res)
       })
     }
     onMounted(() => {
       getPlatformInfo()
     })
-    const systemName = ref('111')
     return {
       systemName,
       getPlatformInfo
@@ -123,10 +125,9 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-
 .login-card__container {
   height: 100%;
-  background: url('~@/assets/img/bg.jpg') no-repeat center/cover ;
+  background: url('~@/assets/img/bg.jpg') no-repeat center/cover;
   font: 12px/1.14 arial, \5b8b\4f53;
   display: -webkit-box;
   display: -moz-box;
@@ -340,5 +341,4 @@ export default defineComponent({
   margin-right: 27px;
   align-items: flex-end;
 }
-
 </style>

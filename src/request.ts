@@ -1,4 +1,4 @@
-import { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios'
 // import { Message, ElLoading } from 'element-plus'
 const service:AxiosInstance = axios.create({
@@ -9,6 +9,13 @@ service.interceptors.request.use((config:AxiosRequestConfig) => {
   return config
 }, error => {
   return Promise.reject(error);
+})
+service.interceptors.response.use(res => {
+  if (res.status === 200) {
+    return Promise.resolve(res.data)
+  }
+}, (error:any) => {
+  Promise.reject(error)
 })
 export default {
   request(data:any):AxiosPromise<any> {
@@ -37,7 +44,7 @@ export default {
   get(url:string, params:any, type = 'json'): AxiosPromise<any> {
     return this.request({ url, responseType: type, params });
   },
-  post(url:string, data:any, responseType = 'json'): AxiosPromise {
+  post(url:string, data:any, responseType = 'json'): AxiosPromise<any> {
     return this.request({
       url,
       data,
