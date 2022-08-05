@@ -4,93 +4,55 @@
     <el-card shadow="always" class="login-card">
       <div  class="totem-div">
         <div class="logo">
-          <img
-            :src="systemLogo"
-            style="width: 34px;height: 48px;margin-right: 16px;"
-          />
-          <!-- <span>高新区扶持资金综合服务云平台</span> -->
           <span
             style="font-size: 24px;color: #fff;display: inline-block;"
           >{{ systemName }}</span>
         </div>
-        <!-- <div class="left-title">
-              一站式<br />
-              精准、快速、便捷<br />
-              服务平台
-            </div>
-            <div class="en-title">
-              ACCURATE&emsp;FAST&emsp;AND&emsp;CONVENIENT
-            </div>
-          </div>
-          <div class="login-div">
-            <el-form
-              style="margin: 25px 20px"
-              :model="principal"
-              :rules="rules"
-              ref="principal"
+        <div class="left-title">
+          一站式<br />
+          精准、快速、便捷<br />
+          服务平台
+        </div>
+        <div class="en-title">
+          ACCURATE&emsp;FAST&emsp;AND&emsp;CONVENIENT
+        </div>
+      </div>
+      <div class="login-div">
+        <el-form
+          style="margin: 25px 20px"
+          :model="loginForm"
+          ref="loginFormCom"
+        >
+          <el-form-item prop="account" label="">
+            <el-input
+              clearable
+              v-model="loginForm.account"
+              placeholder="请输入账号"
+              maxlength="36"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="password" label="">
+            <el-input
+              show-password
+              clearable
+              @keyup.enter="submitForm"
+              v-model="loginForm.password"
+              placeholder="请输入密码"
+              maxlength="36"
+            ></el-input>
+          </el-form-item>
+          <div class="btn_wrap">
+            <el-button
+              class="login_btn"
+              type="primary"
+              @click="submitForm"
+              :loading="loading"
             >
-              <div class="welcome-title">
-                <span style="border-bottom: 2px #1EB3F7 solid;font-size:40px">欢迎登录</span>
-              </div>
-              <el-form-item prop="account">
-                <el-input
-                  size="medium"
-                  clearable
-                  prefix-icon="icon iconfont iconuser"
-                  v-model="principal.account"
-                  placeholder="请输入账号"
-                  maxlength="36"
-                ></el-input>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  show-password
-                  clearable
-                  prefix-icon="icon iconfont iconlock"
-                  @keyup.enter="submitForm('principal')"
-                  @focus="inputGetFocus"
-                  size="medium"
-                  v-model="principal.password"
-                  placeholder="请输入密码"
-                  maxlength="36"
-                ></el-input>
-              </el-form-item>
-              <el-form-item prop="validcode" v-if="showCodeInput">
-                <el-input
-                  prefix-icon="icon iconfont iconshield"
-                  @keyup.enter="submitForm('principal')"
-                  @focus="inputGetFocus"
-                  size="medium"
-                  v-model="principal.validcode"
-                  class=""
-                  placeholder="请输入手机验证码"
-                  maxlength="10"
-                >
-                  <template v-slot:suffix>
-                    <el-button
-                      class="btn_code"
-                      type="primary"
-                      @click="getCode"
-                      :disabled="isDisabled"
-                    >
-                      <span style="font-size:14px">{{ mesCodeTip }}</span>
-                    </el-button>
-                  </template>
-                </el-input>
-              </el-form-item>
-              <div class="btn_wrap">
-                <el-button
-                  class="login_btn"
-                  type="primary"
-                  @focus="inputGetFocus"
-                  @click="submitForm('principal')"
-                  :loading="loading"
-                >
-                  <span style="font-size:20px">登&nbsp;&nbsp;录</span>
-                </el-button>
-              </div>
+              <span style="font-size:20px">登&nbsp;&nbsp;录</span>
+            </el-button>
+          </div>
 
-            </el-form>-->
+        </el-form>
       </div>
 
     </el-card>
@@ -98,27 +60,62 @@
 
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
+import loginApi from '@/api/login'
 import commonApi from '@/api/common'
+import { Base64 } from 'js-base64'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   setup(props, ctx) {
-    console.log(props, ctx)
-    const systemName = ref('111')
-
+    const loading = ref(false)
+    const systemName = ref('')
+    const loginForm = reactive({
+      account: '',
+      password: ''
+    })
+    const router = useRouter()
+    /*
+      *@Description: 获取平台信息
+      *@author: 卢少川
+      *@param: {  } []  =>
+      *@return:
+      *@Date: 2022-08-05 16:48:52
+     */
     const getPlatformInfo = () => {
       const data = {
         code: 'platform'
       }
-      commonApi.getTenantByCode(data).then((res: any) => {
+      commonApi.getTenantByCode(data).then((res:any) => {
         systemName.value = res.name
-        console.log(res)
       })
     }
     onMounted(() => {
       getPlatformInfo()
+      console.log(useRouter());
     })
+    /*
+      *@Description: 提交表单登录
+      *@author: 卢少川
+      *@param: {  } []  =>
+      *@return:
+      *@Date: 2022-08-05 16:18:28
+     */
+    const submitForm = () => {
+      const data = {
+        account: loginForm.account,
+        password: Base64.encode(loginForm.password)
+      }
+      loginApi.login(data).then(res => {
+        router.push({
+          path: '/home'
+        })
+      })
+    }
     return {
       systemName,
+      loginForm,
+      loading,
+      submitForm,
       getPlatformInfo
     }
   }
@@ -238,6 +235,8 @@ export default defineComponent({
   /*height: 320px;*/
   ::v-deep .el-card__body {
     width: 1280px;
+    display: flex;
+
   }
 }
 

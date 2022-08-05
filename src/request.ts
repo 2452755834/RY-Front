@@ -1,6 +1,6 @@
 import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios'
-// import { Message, ElLoading } from 'element-plus'
+import { Message, ElLoading, ElMessage } from 'element-plus'
 const service:AxiosInstance = axios.create({
   baseURL: 'http://59.61.83.130:30123/',
   timeout: 5000
@@ -10,11 +10,14 @@ service.interceptors.request.use((config:AxiosRequestConfig) => {
 }, error => {
   return Promise.reject(error);
 })
-service.interceptors.response.use(res => {
-  if (res.status === 200) {
-    return Promise.resolve(res.data)
-  }
+service.interceptors.response.use((res:AxiosResponse<any, any>):any => {
+  // if (res.status === 200) {
+  // }
+  return res.data
 }, (error:any) => {
+  const errorData = error.response.data
+  ElMessage.error(errorData.message)
+
   Promise.reject(error)
 })
 export default {
