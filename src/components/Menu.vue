@@ -9,9 +9,12 @@ export default defineComponent({
   name: 'Menu',
   setup() {
     const store = useStore()
-    onBeforeMount(() => {
+    onMounted(() => {
       store.dispatch('menu/getMenuListAction')
     })
+    // onBeforeMount(() => {
+    //   store.dispatch('menu/getMenuListAction')
+    // })
   }
 })
 </script>

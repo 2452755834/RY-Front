@@ -1,9 +1,9 @@
 <template>
   <div id="container">
-    <template v-if="route.meta.single">
+    <template v-if="route.name&&route.meta.single">
       <router-view/>
     </template>
-    <template v-else>
+    <template v-if="route.name&&!route.meta.single">
       <!-- 公共头部 -->
       <div class="commonHeader">
         1
@@ -18,13 +18,22 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 import Menu from './components/Menu.vue'
 export default defineComponent({
   components: { Menu },
   setup() {
     const route = useRoute()
+    const store = useStore()
+
+    if (sessionStorage.getItem('storeState')) {
+      store.replaceState(JSON.parse(sessionStorage.getItem('storeState') || ''))
+    }
+    window.onbeforeunload = () => {
+      sessionStorage.setItem('storeState', JSON.stringify(store.state))
+    }
     return {
       route
     }
