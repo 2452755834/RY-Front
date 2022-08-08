@@ -1,8 +1,16 @@
 import commonApi from '@/api/common'
 import { ActionContext } from 'vuex'
 // 菜单模块类型声明
+// 菜单项类型
+interface MenuItem{
+  id:string,
+  name:string,
+  children:Array<MenuItem>,
+  [propName:string]:string|Array<MenuItem>|number
+}
+// 菜单数组类型
 interface MenuStateType{
-  menuList:Array<any>
+  menuList:Array<MenuItem>
 }
 const state = {
   // 菜单列表
@@ -10,7 +18,7 @@ const state = {
 }
 const mutations = {
   // 设置菜单列表
-  setMenuList(state:MenuStateType, val:Array<any>):void {
+  setMenuList(state:MenuStateType, val:Array<MenuItem>):void {
     state.menuList = val
   }
 }
@@ -32,7 +40,7 @@ const actions = {
   }
 }
 export default ({
-  namespace: true,
+  namespaced: true,
   state,
   mutations,
   actions

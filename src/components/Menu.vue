@@ -2,9 +2,16 @@
   1
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onBeforeMount, onMounted } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
-  // setup
+  name: 'Menu',
+  setup() {
+    const store = useStore()
+    onBeforeMount(() => {
+      store.dispatch('menu/getMenuListAction')
+    })
+  }
 })
 </script>

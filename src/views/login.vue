@@ -65,6 +65,7 @@ import loginApi from '@/api/login'
 import commonApi from '@/api/common'
 import { Base64 } from 'js-base64'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 export default defineComponent({
   setup(props, ctx) {
     const loading = ref(false)
@@ -74,38 +75,41 @@ export default defineComponent({
       password: ''
     })
     const router = useRouter()
+    const store = useStore()
     /*
-      *@Description: 获取平台信息
-      *@author: 卢少川
-      *@param: {  } []  =>
-      *@return:
-      *@Date: 2022-08-05 16:48:52
+     *@Description: 获取平台信息
+     *@author: 卢少川
+     *@param: {  } []  =>
+     *@return:
+     *@Date: 2022-08-05 16:48:52
      */
     const getPlatformInfo = () => {
       const data = {
         code: 'platform'
       }
-      commonApi.getTenantByCode(data).then((res:any) => {
+      commonApi.getTenantByCode(data).then((res: any) => {
         systemName.value = res.name
       })
     }
     onMounted(() => {
       getPlatformInfo()
-      console.log(useRouter());
     })
     /*
-      *@Description: 提交表单登录
-      *@author: 卢少川
-      *@param: {  } []  =>
-      *@return:
-      *@Date: 2022-08-05 16:18:28
+     *@Description: 提交表单登录
+     *@author: 卢少川
+     *@param: {  } []  =>
+     *@return:
+     *@Date: 2022-08-05 16:18:28
      */
     const submitForm = () => {
       const data = {
         account: loginForm.account,
         password: Base64.encode(loginForm.password)
       }
-      loginApi.login(data).then(res => {
+      loginApi.login(data).then((res: any) => {
+        sessionStorage.setItem('sessionId', res.token)
+        // 设置用户信息
+        store.commit('user/setCurrentUser', res)
         router.push({
           path: '/home'
         })
@@ -124,6 +128,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .login-card__container {
   height: 100%;
+  width: 100%;
   background: url('~@/assets/img/bg.jpg') no-repeat center/cover;
   font: 12px/1.14 arial, \5b8b\4f53;
   display: -webkit-box;
@@ -236,7 +241,6 @@ export default defineComponent({
   ::v-deep .el-card__body {
     width: 1280px;
     display: flex;
-
   }
 }
 

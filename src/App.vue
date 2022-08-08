@@ -1,14 +1,43 @@
 <template>
+  <div id="container">
+    <template v-if="route.meta.single">
+      <router-view/>
+    </template>
+    <template v-else>
+      <!-- 公共头部 -->
+      <div class="commonHeader">
+        1
+      </div>
+      <Menu ></Menu>
+      <div class="content">
+        <router-view/>
 
-  <router-view/>
+      </div>
 
+    </template>
+  </div>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { useRoute } from 'vue-router'
+import Menu from './components/Menu.vue'
+export default defineComponent({
+  components: { Menu },
+  setup() {
+    const route = useRoute()
+    return {
+      route
+    }
+  }
+})
+</script>
 
-<style>
-html,body{
+<style lang="scss">
+html,
+body {
   width: 100%;
   height: 100%;
-  padding:0;
+  padding: 0;
   margin: 0;
 }
 #app {
@@ -21,16 +50,12 @@ html,body{
   height: 100%;
 }
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+#container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  .content {
+    flex: 1;
+  }
 }
 </style>
