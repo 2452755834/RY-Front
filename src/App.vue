@@ -6,7 +6,7 @@
     <template v-if="route.name&&!route.meta.single">
       <!-- 公共头部 -->
       <div class="commonHeader">
-        1
+
       </div>
       <Menu ></Menu>
       <div class="content">

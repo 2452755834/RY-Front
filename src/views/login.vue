@@ -1,5 +1,4 @@
 <template>
-
   <div class="login-card__container fullheight">
     <el-card shadow="always" class="login-card">
       <div  class="totem-div">
@@ -17,6 +16,7 @@
           ACCURATE&emsp;FAST&emsp;AND&emsp;CONVENIENT
         </div>
       </div>
+
       <div class="login-div">
         <el-form
           style="margin: 25px 20px"
@@ -60,7 +60,7 @@
 
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onActivated, onMounted, reactive, ref } from 'vue'
 import loginApi from '@/api/login'
 import commonApi from '@/api/common'
 import { Base64 } from 'js-base64'
@@ -68,6 +68,8 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 export default defineComponent({
   setup(props, ctx) {
+    console.log(props, ctx);
+
     const loading = ref(false)
     const systemName = ref('')
     const loginForm = reactive({
@@ -91,6 +93,7 @@ export default defineComponent({
         systemName.value = res.name
       })
     }
+
     onMounted(() => {
       getPlatformInfo()
     })
@@ -102,6 +105,7 @@ export default defineComponent({
      *@Date: 2022-08-05 16:18:28
      */
     const submitForm = () => {
+      loading.value = true
       const data = {
         account: loginForm.account,
         password: Base64.encode(loginForm.password)
@@ -113,6 +117,8 @@ export default defineComponent({
         router.push({
           path: '/home'
         })
+      }).finally(() => {
+        loading.value = false
       })
     }
     return {
@@ -143,15 +149,7 @@ export default defineComponent({
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  ::v-deep input {
-    height: 46px;
-    /*margin-bottom: 4px;*/
-    border-radius: 0px;
-    border-bottom: 1px #c8c8c8 solid;
-    border-top: none;
-    border-right: none;
-    border-left: none;
-  }
+
   ::v-deep .el-form-item__error {
     margin: 4px;
   }
@@ -252,6 +250,7 @@ export default defineComponent({
   -webkit-box-shadow: 2px 2px 5px #999;
   box-shadow: 2px 2px 5px #999;
   box-sizing: border-box;
+  background-color: rgba(198, 232, 247, 0.2);
   .logo {
     display: flex;
     align-items: center;
@@ -278,6 +277,9 @@ export default defineComponent({
   float: right;
   border-radius: 5px;
   box-sizing: border-box;
+  ::v-deep .el-input__wrapper{
+  padding: 1px 11px ;
+}
 }
 
 .welcome-title {

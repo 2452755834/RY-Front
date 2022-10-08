@@ -10,7 +10,8 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'Login',
     meta: {
-      single: true
+      single: true,
+      keepAlive: true
     },
     component: () => import('@/views/login.vue')
   },
