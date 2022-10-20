@@ -4,7 +4,7 @@ import { Message, ElLoading, ElMessage } from 'element-plus'
 import { useStore } from 'vuex';
 import store from './store';
 const service:AxiosInstance = axios.create({
-  baseURL: 'http://59.61.83.130:30123/',
+  baseURL: 'http://127.0.0.1:3000/',
   timeout: 5000
 })
 service.interceptors.request.use((config:AxiosRequestConfig) => {

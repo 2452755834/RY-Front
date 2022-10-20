@@ -60,11 +60,9 @@ body {
 }
 
 #container {
-  display: flex;
+  // display: flex;
   height: 100%;
   width: 100%;
-  .content {
-    flex: 1;
-  }
+
 }
 </style>

@@ -1,5 +1,5 @@
 {
-  "name": "x7-manage3",
+  "name": "my-RuoYi",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -31,6 +31,7 @@
     "eslint-plugin-vue": "^7.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "svg-sprite-loader": "^6.0.11",
     "typescript": "~4.1.5"
   }
 }
