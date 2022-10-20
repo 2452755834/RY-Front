@@ -13,12 +13,10 @@ app.use(ElementPlus);
 app.component('svg-icon', SvgIcon);
 app.mount('#app')
 
-
-let importAll = (requireContext:__WebpackModuleApi.RequireContext) =>requireContext.keys().forEach(requireContext);
-try{
-    importAll(require.context("@/assets/icons/svg/",true,/\.svg$/));
-}catch(error){
-    console.log(error);
-};
-
+const importAll = (requireContext:__WebpackModuleApi.RequireContext) => requireContext.keys().forEach(requireContext);
+try {
+  importAll(require.context('@/assets/icons/svg/', true, /\.svg$/));
+} catch (error) {
+  console.log(error);
+}
 
