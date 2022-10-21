@@ -1,8 +1,14 @@
-import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from 'axios';
 import axios from 'axios'
 import { Message, ElLoading, ElMessage } from 'element-plus'
 import { useStore } from 'vuex';
 import store from './store';
+// 定义统一的响应体数据
+type Result<T>={
+  code: number,
+  message: string,
+  data: T
+}
 const service:AxiosInstance = axios.create({
   baseURL: 'http://127.0.0.1:3000/',
   timeout: 5000
@@ -32,7 +38,7 @@ service.interceptors.response.use((res:AxiosResponse<any, any>):any => {
   Promise.reject(error)
 })
 export default {
-  request(data:any):AxiosPromise<any> {
+  request(data:AxiosRequestConfig):Promise<AxiosResponse> {
     const reqData = data.data || {};
     // // 支持表达式作为域名解析
     // data.url = utils.parseUrl(data.url);
@@ -40,25 +46,25 @@ export default {
     // if (data.url.indexOf('http') == -1) {
     //   data.url = context.manage + data.url;
     // }
-    const requestData = {
+    const requestData:AxiosRequestConfig = {
       url: data.url,
       data: reqData,
       method: data.method || 'GET',
       params: data.params || {},
-      onUploadProgress: data.onUploadProgress || null,
-      headers: data.headers || '',
+      onUploadProgress: data.onUploadProgress || undefined,
+      headers: data.headers || undefined,
       responseType: data.responseType || 'json',
       timeout: data.timeout || axios.defaults.timeout
     };
-    return service(requestData);
+    return service.request(requestData);
   },
-  download(url:string): AxiosPromise<any> {
-    return this.request({ url, responseType: 'arraybuffer' });
+  // download(url:string): AxiosPromise<any> {
+  //   return this.request({ url, responseType: 'arraybuffer' });
+  // },
+  get<T, R>(url:string, params:T): Promise<AxiosResponse<Result<R>>> {
+    return this.request({ url, params });
   },
-  get(url:string, params:any, type = 'json'): AxiosPromise<any> {
-    return this.request({ url, responseType: type, params });
-  },
-  post(url:string, data:any, responseType = 'json'): AxiosPromise<any> {
+  post<T, R>(url:string, data:T, responseType:ResponseType = 'json'): Promise<AxiosResponse<Result<R>>> {
     return this.request({
       url,
       data,
