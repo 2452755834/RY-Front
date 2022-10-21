@@ -11,7 +11,6 @@
       </el-form-item>
     </el-form>
   </div>
-
 </template>
 <script lang="ts" setup>
 import { defineComponent, reactive } from 'vue';
@@ -24,7 +23,7 @@ const loginForm = reactive({
 <style lang="scss" scoped>
 .login-wrapper {
   height: 100%;
-  background: url('~@/assets/img/login-background.jpg') center/cover;
+  // background: url('~@/assets/img/login-background.jpg') center/cover;
   display: flex;
   align-items: center;
   justify-content: center;
