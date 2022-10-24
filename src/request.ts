@@ -1,10 +1,11 @@
-import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from 'axios';
+import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType, AxiosInterceptorManager } from 'axios';
 import axios from 'axios'
 import { Message, ElLoading, ElMessage } from 'element-plus'
 import { useStore } from 'vuex';
+import { getToken } from './utils/auth';
 import store from './store';
 // 定义统一的响应体数据
-type Result<T>={
+type Result<T=any>={
   code: number,
   message: string,
   data: T
@@ -14,28 +15,35 @@ const service:AxiosInstance = axios.create({
   timeout: 5000
 })
 service.interceptors.request.use((config:AxiosRequestConfig) => {
-  const currentUser = store.state.user.currentUser
-  let Authorization = 'Bearer '
-  if (currentUser && currentUser.token) {
-    Authorization += currentUser.token
+  // 添加token
+  if (getToken() && config.headers) {
+    config.headers['Authorization'] = `Bearer ${getToken()}`
   }
-  config.headers = { ...config.headers, Authorization }
 
   return config
 }, error => {
   return Promise.reject(error);
 })
-service.interceptors.response.use((res:AxiosResponse<any, any>):any => {
+service.interceptors.response.use((res:AxiosResponse<Result>) => {
   // if (res.status === 200) {
   // }
-  return res.data
-}, (error:any) => {
-  console.log(error);
-
-  const errorData = error.response.data
-  ElMessage.error(errorData.message)
-
-  Promise.reject(error)
+  return Promise.resolve(res.data)
+}, (error) => {
+  console.log('err' + error);
+  let { message } = error;
+  if (message === 'Network Error') {
+    message = '后端接口连接异常';
+  } else if (message.includes('timeout')) {
+    message = '系统接口请求超时';
+  } else if (message.includes('Request failed with status code')) {
+    message = '系统接口' + message.substr(message.length - 3) + '异常';
+  }
+  ElMessage({
+    message: message,
+    type: 'error',
+    duration: 5 * 1000
+  });
+  return Promise.reject(error);
 })
 export default {
   request(data:AxiosRequestConfig):Promise<AxiosResponse> {
