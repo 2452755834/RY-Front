@@ -1,7 +1,6 @@
 import { AxiosPromise, AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType, AxiosInterceptorManager } from 'axios';
 import axios from 'axios'
 import { Message, ElLoading, ElMessage } from 'element-plus'
-import { useStore } from 'vuex';
 import { getToken } from './utils/auth';
 import store from './store';
 // 定义统一的响应体数据
