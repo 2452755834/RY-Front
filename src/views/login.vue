@@ -43,11 +43,15 @@
 </template>
 <script lang="ts" setup>
 import { defineComponent, reactive, ref } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import useUserStore from '@/store/modules/user.ts'
+import { useRouter } from 'vue-router'
+const userStore = useUserStore()
+const router = useRouter()
 // 登录表单内容
 const loginForm = reactive({
   username: 'admin',
-  password: 'admin123456'
+  password: '123456'
 });
 // 登录按钮加载中
 const loading = ref(false)
@@ -62,6 +66,12 @@ function handleLogin() {
 loginRef.value?.validate(valid => {
   if (valid) {
     loading.value = true
+    userStore.login(loginForm).then(() => {
+      ElMessage.success('登录成功')
+      router.push('/home')
+    }).finally(() => {
+      loading.value = false
+    })
   }
 })
 }

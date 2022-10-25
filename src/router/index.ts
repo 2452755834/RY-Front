@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-
+import Layout from '@/layout/index.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -13,6 +13,19 @@ const routes: Array<RouteRecordRaw> = [
       keepAlive: true
     },
     component: () => import('@/views/login.vue')
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    redirect: '/home/index',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/home.vue')
+
+      }
+    ]
   }
 
 ]

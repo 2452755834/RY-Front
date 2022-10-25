@@ -7,10 +7,11 @@ import store from './store';
 type Result<T=any>={
   code: number,
   message: string,
+  state:boolean,
   data: T
 }
 const service:AxiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:3000/',
+  baseURL: 'http://127.0.0.1:7797/',
   timeout: 5000
 })
 service.interceptors.request.use((config:AxiosRequestConfig) => {
@@ -26,6 +27,9 @@ service.interceptors.request.use((config:AxiosRequestConfig) => {
 service.interceptors.response.use((res:AxiosResponse<Result>) => {
   // if (res.status === 200) {
   // }
+  if (!res.data.state) {
+    ElMessage.error(res.data.message)
+  }
   return Promise.resolve(res.data)
 }, (error) => {
   console.log('err' + error);

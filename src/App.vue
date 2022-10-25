@@ -1,20 +1,6 @@
 <template>
-  <div id="container">
-    <template v-if="route.name&&route.meta.single">
-      <router-view/>
-    </template>
-    <template v-if="route.name&&!route.meta.single">
-      <!-- 公共头部 -->
-      <div class="commonHeader">
+  <router-view/>
 
-      </div>
-      <div class="content">
-        <router-view/>
-
-      </div>
-
-    </template>
-  </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
