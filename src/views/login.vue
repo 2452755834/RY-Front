@@ -27,6 +27,23 @@
           </template>
         </el-input>
       </el-form-item>
+      <el-form-item prop="code">
+        <el-input
+          v-model="loginForm.code"
+          size="large"
+          auto-complete="off"
+          placeholder="验证码"
+          style="width: 63%"
+          @keyup.enter="handleLogin"
+        >
+          <template #prefix>
+            <svg-icon icon-class="validCode" class="el-input__icon input-icon" />
+          </template>
+        </el-input>
+        <div class="login-code">
+          <img :src="codeUrl" @click="getCode" class="login-code-img" />
+        </div>
+      </el-form-item>
       <el-form-item label="">
         <el-button
           block
@@ -45,36 +62,57 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import useUserStore from '@/store/modules/user.ts'
+import { getCodeImg } from '@/api/login';
+
 import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const router = useRouter()
 // 登录表单内容
 const loginForm = reactive({
   username: 'admin',
-  password: '123456'
+  password: 'admin123',
+  uuid: '',
+  code: ''
 });
 // 登录按钮加载中
 const loading = ref(false)
+const codeUrl = ref('');
+
 const loginRef = ref<FormInstance>()
 // 表单校验规则
 const rules = reactive<FormRules>({
   username: [{ required: true, trigger: 'blur', message: '请输入您的账号' }],
-  password: [{ required: true, trigger: 'blur', message: '请输入您的密码' }]
-  // code: [{ required: true, trigger: 'change', message: '请输入验证码' }],
+  password: [{ required: true, trigger: 'blur', message: '请输入您的密码' }],
+  code: [{ required: true, trigger: 'change', message: '请输入验证码' }]
 })
-function handleLogin() {
-loginRef.value?.validate(valid => {
-  if (valid) {
-    loading.value = true
-    userStore.login(loginForm).then(() => {
-      ElMessage.success('登录成功')
-      router.push('/home')
-    }).finally(() => {
-      loading.value = false
-    })
-  }
-})
+/*
+  *@description 获取验证码
+  *@param {  } []
+  *@author 卢少川
+  *@return
+  *@date 2022/10/27 16:29:08
+ */
+function getCode() {
+  getCodeImg().then((res: any) => {
+    codeUrl.value = 'data:image/gif;base64,' + res.img;
+    loginForm.uuid = res.uuid;
+  });
 }
+function handleLogin() {
+  loginRef.value?.validate(valid => {
+    if (valid) {
+      loading.value = true
+      userStore.login(loginForm).then(() => {
+        ElMessage.success('登录成功')
+        router.push('/home')
+      }).finally(() => {
+        loading.value = false
+      })
+    }
+  })
+}
+getCode();
+
 </script>
 <style lang="scss" scoped>
 .login-wrapper {

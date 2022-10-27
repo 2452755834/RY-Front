@@ -17,14 +17,14 @@ const useUserStore = defineStore('user', {
     permissions: []
   }),
   actions: {
-    login(userInfo:{username:string, password:string, code?:string, uuid?:string}) {
-      // const username = userInfo.username.trim();
-      // const password = userInfo.password;
-      // const code = userInfo.code;
-      // const uuid = userInfo.uuid;
+    login(userInfo:{username:string, password:string, code:string, uuid:string}) {
+      const username = userInfo.username.trim();
+      const password = userInfo.password;
+      const code = userInfo.code;
+      const uuid = userInfo.uuid;
 
       return new Promise((resolve, reject) => {
-        login(userInfo)
+        login(username, password, code, uuid)
           .then((res: any) => {
             if (res.state) {
               setToken(res.token);
